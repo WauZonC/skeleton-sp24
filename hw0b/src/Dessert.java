@@ -5,7 +5,7 @@ public class Dessert {
     public Dessert(int flavor, int price){
         this.flavor = flavor;
         this.price = price;
-        numDesserts += 1;
+        numDesserts++;
     }
     public void printDessert() {
         System.out.println(flavor + " " + price + " " + numDesserts);

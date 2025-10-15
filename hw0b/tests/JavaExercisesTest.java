@@ -55,6 +55,9 @@ public class JavaExercisesTest {
 
         int[] test2 = new int[]{2, 4, 6, 8};
         assertThat(JavaExercises.findMinMax(test2)).isEqualTo(6);
+
+        int[] test3 = new int[]{1};
+        assertThat(JavaExercises.findMinMax(test3)).isEqualTo(0);
     }
 
     @Test

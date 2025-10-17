@@ -100,7 +100,13 @@ public class Model {
      * given a Tile object t, we get its value with t.value().
      */
     public boolean maxTileExists() {
-        // TODO: Task 3. Fill in this function.
+        for (int i = 0; i < board.size(); i++) {
+            for (int j = 0; j < board.size(); j++) {
+                if (board.tile(i,j) != null && board.tile(i,j).value() == MAX_PIECE) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -111,7 +117,30 @@ public class Model {
      * 2. There are two adjacent tiles with the same value.
      */
     public boolean atLeastOneMoveExists() {
-        // TODO: Fill in this function.
+        if (emptySpaceExists()) {
+            return true;
+        }
+        for (int i = 0; i < board.size(); i++) {
+            for (int j = 0; j < board.size(); j++) {
+                int middle = board.tile(i,j).value();
+                for (int x = Math.max(0, i - 1); x <= Math.min(i + 1, board.size()) - 1; x++) {
+                    if (x == i) {
+                        continue;
+                    }
+                    if (board.tile(x,j).value() == middle) {
+                        return true;
+                    }
+                }
+                for (int y = Math.max(0, j - 1); y <= Math.min(j + 1, board.size()) - 1; y++) {
+                    if (y == j) {
+                        continue;
+                    }
+                    if (board.tile(i,y).value() == middle) {
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
     }
 

@@ -52,32 +52,70 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return length == 0;
     }
 
     @Override
     public int size() {
-        return 0;
+        return length;
     }
 
     @Override
     public T removeFirst() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+
+        Node dummyHead = sentinel.getLatter().getLatter();
+        Node node = sentinel.getLatter();
+
+        dummyHead.setPrevious(sentinel);
+        sentinel.setLatter(dummyHead);
+
+        length--;
+        return node.value();
     }
 
     @Override
     public T removeLast() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+
+        Node dummyHead = sentinel.getPrevious().getPrevious();
+        Node node = sentinel.getPrevious();
+
+        dummyHead.setLatter(sentinel);
+        sentinel.setPrevious(dummyHead);
+
+        length--;
+        return node.value();
     }
 
     @Override
     public T get(int index) {
-        return null;
+        if (index < 0 || index >= size()) {
+            return null;
+        }
+        Node p = sentinel.getLatter();
+        int cnt = 0;
+        while (cnt != index) {
+            p = p.getLatter();
+            cnt++;
+        }
+        return p.value();
     }
 
     @Override
     public T getRecursive(int index) {
-        return null;
+        if (index < 0 || index >= size()) {
+            return null;
+        }
+        return getRecursiveHelper(sentinel.getLatter(), index);
+    }
+
+    private T getRecursiveHelper(Node node, int index) {
+        return (index == 0) ? node.value() : getRecursiveHelper(node.getLatter(), index - 1);
     }
 
     /**Node : Implementing the node of a Deque
@@ -85,7 +123,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
      * */
     private class Node {
 
-        private T value;
+        private final T value;
         private Node previous;
         private Node latter;
 
@@ -103,12 +141,12 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
         }
 
         /**
-         * @param previous the previous node
-         * @param latter the latter node
+         * @param prev the previous node
+         * @param lat the latter node
          */
-        public void set(Node previous, Node latter) {
-            this.previous = previous;
-            this.latter = latter;
+        public void set(Node prev, Node lat) {
+            this.previous = prev;
+            this.latter = lat;
         }
 
         /**

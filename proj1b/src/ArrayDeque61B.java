@@ -1,16 +1,13 @@
-import net.sf.saxon.functions.Minimax;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.Math;
 
 public class ArrayDeque61B<T> implements Deque61B<T> {
 
     private int length;
     private int maxSize;
-    /**front-the first element of the array*/
+    /**the first element of the array*/
     private int front;
-    /**end-the one after last element of the array*/
+    /**the one after last element of the array*/
     private int end;
     private T[] array;
 
@@ -34,11 +31,17 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
     /**a method to resize the array if it is full     */
     public void resize() {
         maxSize *= 2;
+        copyAndChange(maxSize / 2);
+    }
+
+    /**a method to changing the array to a maxSize-length new array
+     * @param prevLength what maxSize used to be*/
+    public void copyAndChange(int prevLength) {
         T[] newArray = (T[]) new Object[maxSize];
         int i = front;
         for (int cnt = 0; cnt < length; cnt++) {
             newArray[cnt] = array[i];
-            i = Math.floorMod(i + 1, length);
+            i = Math.floorMod(i + 1, prevLength);
         }
 
         array = newArray;
@@ -46,6 +49,7 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
         end = length;
     }
 
+    /**check whether an array is fully to be resized*/
     public void checkFull() {
         if (length == maxSize) {
             resize();
@@ -83,31 +87,75 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return length == 0;
     }
 
     @Override
     public int size() {
-        return 0;
+        return length;
+    }
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    /**a method checking that if the actual length is less than
+     * 25% maxSize and call sizeDown*/
+    public void checkEmpty() {
+        if (length <= maxSize / 4 && maxSize >= 8 * 2) {
+            sizeDown();
+        }
+    }
+
+    /**a method to sizing down the array list*/
+    public void sizeDown() {
+        maxSize = Math.floorDiv(maxSize, 2);
+        copyAndChange(maxSize * 2);
     }
 
     @Override
     public T removeFirst() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        T returnValue = array[front];
+        array[front] = null;
+        front = real(front + 1);
+        length--;
+        checkEmpty();
+        return returnValue;
     }
 
     @Override
     public T removeLast() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        end = real(end - 1);
+        T returnValue = array[end];
+        length--;
+        checkEmpty();
+        return returnValue;
     }
 
     @Override
     public T get(int index) {
-        return null;
+        if (index < 0 || index >= length) {
+            return null;
+        }
+        return array[real(front + index)];
     }
 
     @Override
     public T getRecursive(int index) {
-        return null;
+        if (index < 0 || index >= length) {
+            return null;
+        }
+        return getRecursiveHelper(front, index);
+    }
+
+    /**a helper method for getRecursive*/
+    private T getRecursiveHelper(int present, int index) {
+        return index == 0 ? array[present] : getRecursiveHelper(real(present + 1), index - 1);
     }
 }

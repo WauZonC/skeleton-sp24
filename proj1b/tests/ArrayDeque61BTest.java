@@ -72,4 +72,81 @@ public class ArrayDeque61BTest {
         }
         assertThat(test1.toList()).containsExactly(9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19).inOrder();
     }
+
+    @Test
+    @DisplayName("RemoveFirst no sizeDown")
+    public void removeFirstTest() {
+        ArrayDeque61B<Integer> test1 = new ArrayDeque61B<>();
+        assertThat(test1.removeFirst()).isEqualTo(null);
+        assertThat(test1.size()).isEqualTo(0);
+        for (int i = 0; i < 10; i++) {
+            test1.addFirst(i);
+        }
+        assertThat(test1.removeFirst()).isEqualTo(9);
+        assertThat(test1.size()).isEqualTo(9);
+    }
+
+    @Test
+    @DisplayName("RemoveFirst with sizeDown")
+    public void removeFirstWithSizeDown() {
+        ArrayDeque61B<Integer> test1 = new ArrayDeque61B<>();
+        assertThat(test1.removeFirst()).isEqualTo(null);
+        assertThat(test1.size()).isEqualTo(0);
+        for (int i = 0; i < 20; i++) {
+            test1.addFirst(i);
+        }
+        assertThat(test1.toList()).containsExactly(19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0);
+        assertThat(test1.getMaxSize()).isEqualTo(32);
+        for (int i = 0; i < 15; i++) {
+            assertThat(test1.removeFirst()).isEqualTo(19 - i);
+        }
+        assertThat(test1.getMaxSize()).isEqualTo(16);
+        assertThat(test1.size()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("RemoveLast with sizeDown")
+    public void removeLastWithSizeDown() {
+        ArrayDeque61B<Integer> test1 = new ArrayDeque61B<>();
+        assertThat(test1.removeLast()).isEqualTo(null);
+        assertThat(test1.size()).isEqualTo(0);
+        for (int i = 0; i < 20; i++) {
+            test1.addFirst(i);
+        }
+        assertThat(test1.toList()).containsExactly(19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0);
+        assertThat(test1.getMaxSize()).isEqualTo(32);
+        for (int i = 0; i < 15; i++) {
+            assertThat(test1.removeLast()).isEqualTo(i);
+        }
+        assertThat(test1.getMaxSize()).isEqualTo(16);
+        assertThat(test1.size()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("get")
+    public void getTest() {
+        ArrayDeque61B<Integer> test1 = new ArrayDeque61B<>();
+        for (int i = 0; i < 20; i++) {
+            test1.addLast(i);
+        }
+        for (int i = 0; i < 20; i++) {
+            assertThat(test1.get(i)).isEqualTo(i);
+        }
+        assertThat(test1.get(-1)).isEqualTo(null);
+        assertThat(test1.get(100)).isEqualTo(null);
+    }
+
+    @Test
+    @DisplayName("get recursive")
+    public void getRecursiveTest() {
+        ArrayDeque61B<Integer> test1 = new ArrayDeque61B<>();
+        for (int i = 0; i < 20; i++) {
+            test1.addLast(i);
+        }
+        for (int i = 0; i < 20; i++) {
+            assertThat(test1.getRecursive(i)).isEqualTo(i);
+        }
+        assertThat(test1.getRecursive(-1)).isEqualTo(null);
+        assertThat(test1.getRecursive(100)).isEqualTo(null);
+    }
 }

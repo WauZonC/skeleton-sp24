@@ -82,7 +82,22 @@ public class PercolationTest {
     //       write some more tests and delete the fail() line
     @Test
     public void yourFirstTestHere() {
-        fail("Did you write your own tests?");
+        int N = 5;
+        Percolation p = new Percolation(N);
+        // open sites at (r, c) = (0, 1), (2, 0), (3, 1), etc. (0, 0) is top-left
+        int[][] openSites = {
+                {0, 1},
+                {1, 0},
+                {2, 0},
+                {3, 0},
+                {4, 0},
+                {1, 1}
+        };
+        for (int[] site : openSites) {
+            p.open(site[0], site[1]);
+        }
+        assertThat(p.isOpen(2, 2)).isEqualTo(false);
+        assertThat(p.percolates()).isEqualTo(true);
     }
 
 }

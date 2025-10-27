@@ -1,4 +1,5 @@
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -80,12 +81,23 @@ public class UnionFindTest {
         }
     }
 
-    /**
-     * Write your own tests below here to verify for correctness. The given tests are not comprehensive.
-     * Specifically, you may want to write a test for path compression and to check for the correctness
-     * of all methods in your implementation.
-     */
-
+    @Test
+    @DisplayName("OverallCorrectness")
+    public void overallCorrectnessTest() {
+        UnionFind uf = new UnionFind(10);
+        uf.union(0,1);
+        assertThat(uf.sizeOf(0)).isEqualTo(2);
+        assertThat(uf.sizeOf(1)).isEqualTo(2);
+        assertThat(uf.parent(0)).isEqualTo(1);
+        uf.union(2,0);
+        uf.union(3,2);
+        uf.union(4,3);
+        assertThat(uf.parent(1)).isEqualTo(-5);
+        uf.find(4);
+        for(int i = 2; i <= 4; i++) {
+            assertThat(uf.parent(i)).isEqualTo(1);
+        }
+    }
 }
 
 

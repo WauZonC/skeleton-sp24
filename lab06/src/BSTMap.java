@@ -1,5 +1,4 @@
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
@@ -76,7 +75,11 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     @Override
     public Set<K> keySet() {
-        return Set.of();
+        Set<K> set = new TreeSet<>();
+        for (K key : this) {
+            set.add(key);
+        }
+        return set;
     }
 
     @Override
@@ -86,7 +89,23 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     @Override
     public Iterator<K> iterator() {
-        return null;
+        return toList(root).iterator();
+    }
+
+    private List<K> toList(Node n) {
+        List<K> list;
+        if (n.left() != null) {
+            list = toList(n.left());
+        } else {
+            list = new ArrayList<>();
+        }
+        list.addLast(n.key());
+        if (n.right() != null) {
+            for (K key : toList(n.right())) {
+                list.addLast(key);
+            }
+        }
+        return list;
     }
 
     private class Node {

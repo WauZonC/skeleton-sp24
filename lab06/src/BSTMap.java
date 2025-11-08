@@ -40,6 +40,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         Node find = findNode((K) key);
         if (find != null) {
             find.modifyValue(value);
+            return;
         } else {
             size++;
         }
@@ -84,7 +85,46 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        Node find = findNode(key);
+        if (find != null) {
+            V value = find.value();
+            root = remove(root, key);
+            size--;
+            return value;
+        } else {
+            return null;
+        }
+    }
+
+    private Node remove(Node node, K key) {
+        if (node == null) {
+            return null;
+        }
+
+        int cmp = node.key().compareTo(key);
+        if (cmp < 0) {
+            node.setRight(remove(node.right(), key));
+        } else if (cmp > 0) {
+            node.setLeft(remove(node.left(), key));
+        } else {
+            if (node.left() == null) {
+                return node.right();
+            } else if (node.right() == null) {
+                return node.left();
+            } else {
+                Node remove = findMin(node.right());
+                node.modify(remove.key(), remove.value());
+                node.setRight(remove(node.right(), remove.key()));
+            }
+        }
+        return node;
+    }
+
+    private Node findMin(Node node) {
+        while (node.left() != null) {
+            node = node.left();
+        }
+        return node;
     }
 
     @Override
@@ -93,44 +133,45 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     }
 
     private List<K> toList(Node n) {
+        if (n == null) {
+            return new ArrayList<>();
+        }
         List<K> list;
         if (n.left() != null) {
             list = toList(n.left());
         } else {
             list = new ArrayList<>();
         }
-        list.addLast(n.key());
+        list.add(n.key());
         if (n.right() != null) {
-            for (K key : toList(n.right())) {
-                list.addLast(key);
-            }
+            list.addAll(toList(n.right()));
         }
         return list;
     }
 
     private class Node {
-        private final K key;
+        private K key;
         private V value;
         private Node left;
         private Node right;
-        private int number;
 
         public Node(K key, V value) {
             this.key = key;
             this.value = value;
             left = null;
             right = null;
-            number = 0;
         }
 
+        public void modify(K k, V v) {
+            this.key = k;
+            this.value = v;
+        }
         public void setLeft(Node left) {
             this.left = left;
-            this.number += 1;
         }
 
         public void setRight(Node right) {
             this.right = right;
-            this.number += 1;
         }
 
         public Node left() {
@@ -154,7 +195,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         }
 
         public int linkedNumber() {
-            return number;
+            return (left == null ? 0 : 1) + (right == null ? 0 : 1);
         }
     }
 }

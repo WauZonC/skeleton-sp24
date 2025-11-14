@@ -1,5 +1,6 @@
 import ngrams.TimeSeries;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -54,5 +55,33 @@ public class TimeSeriesTest {
 
         assertThat(totalPopulation.years()).isEmpty();
         assertThat(totalPopulation.data()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Divided By")
+    public void testDividedBy() {
+        TimeSeries origin = new TimeSeries();
+        TimeSeries divideNumber = new TimeSeries();
+        origin.put(2000, 100.0);
+        origin.put(2010, 20.0);
+        origin.put(2015, 300.0);
+
+        divideNumber.put(1950, 10.0);
+        divideNumber.put(2000,10.0);
+        divideNumber.put(2010, 40.0);
+        divideNumber.put(2015, 1.0);
+
+        TimeSeries quotient = origin.dividedBy(divideNumber);
+
+        List<Double> expectValues = new ArrayList<>(Arrays.asList(10.0, 0.5, 300.0));
+        assertThat(quotient.data()).isEqualTo(expectValues);
+
+        origin.put(2001, 100.0);
+        try {
+            origin.dividedBy(divideNumber);
+            assertThat(1).isEqualTo(2);
+        } catch (IllegalArgumentException e) {
+            assertThat(1).isEqualTo(1);
+        }
     }
 } 

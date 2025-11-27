@@ -1,5 +1,6 @@
 package main;
 
+import wordnet.WordNet;
 import browser.NgordnetServer;
 import org.slf4j.LoggerFactory;
 
@@ -13,10 +14,11 @@ public class Main {
         String synsetFile = "./data/wordnet/synsets.txt";
         String hyponymFile = "./data/wordnet/hyponyms.txt";
 
+        WordNet wordNet = new WordNet(synsetFile, hyponymFile);
         hns.startUp();
         hns.register("history", new DummyHistoryHandler());
         hns.register("historytext", new DummyHistoryTextHandler());
-        hns.register("hyponyms", new HyponymsHandler());
+        hns.register("hyponyms", new HyponymsHandler(wordNet));
 
         System.out.println("Finished server startup! Visit http://localhost:4567/ngordnet.html");
     }

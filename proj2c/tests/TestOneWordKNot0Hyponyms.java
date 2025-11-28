@@ -26,5 +26,19 @@ public class TestOneWordKNot0Hyponyms {
         assertThat(actual).isEqualTo(expected);
     }
 
-    // TODO: Add more unit tests (including edge case tests) here.
+    @Test
+    public void testActKNot02() {
+        String wordFile = "./data/ngrams/top_14377_words.csv";
+        String countFile = "./data/ngrams/total_counts.csv";
+        String synsetFile = "./data/wordnet/synsets.txt";
+        String hyponymFile = "./data/wordnet/hyponyms.txt";
+        NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymsHandler(
+                wordFile, countFile, synsetFile, hyponymFile);
+        List<String> words = List.of("food", "cake");
+
+        NgordnetQuery nq = new NgordnetQuery(words, 1950, 1990, 5, NgordnetQueryType.HYPONYMS);
+        String actual = studentHandler.handle(nq);
+        String expected = "[cake, cookie, kiss, snap, wafer]";
+        assertThat(actual).isEqualTo(expected);
+    }
 }

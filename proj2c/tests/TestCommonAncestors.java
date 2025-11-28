@@ -31,7 +31,43 @@ public class TestCommonAncestors {
         assertThat(actual).isEqualTo(expected);
     }
 
-    // TODO: Add more unit tests (including edge case tests) here.
+    @Test
+    public void testSpecAdjustment2() {
+        NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymsHandler(
+                WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
+        List<String> words = List.of("event");
 
-    // TODO: Create similar unit test files for the k != 0 cases.
+        NgordnetQuery nq = new NgordnetQuery(words, 2000, 2020, 0, NgordnetQueryType.ANCESTORS);
+        String actual = studentHandler.handle(nq);
+        String expected = "[event]";
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void testSpecAdjustment3() {
+        NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymsHandler(
+                WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
+        List<String> words = List.of("change", "adjustment");
+
+        NgordnetQuery nq = new NgordnetQuery(words, 2000, 2020, 0, NgordnetQueryType.ANCESTORS);
+        String actual = studentHandler.handle(nq);
+        String expected = "[alteration, event, happening, modification, natural_event, occurrence, occurrent]";
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void testSpecAdjustmentKNot0() {
+        String wordFile = "./data/ngrams/frequency-EECS.csv";
+        String countFile = "./data/ngrams/total_counts.csv";
+        String synsetFile = "./data/wordnet/synsets-EECS.txt";
+        String hyponymFile = "./data/wordnet/hyponyms-EECS.txt";
+        NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymsHandler(
+                wordFile, countFile, synsetFile, hyponymFile);
+        List<String> words = List.of("CS170");
+
+        NgordnetQuery nq = new NgordnetQuery(words, 2015, 2020, 3, NgordnetQueryType.ANCESTORS);
+        String actual = studentHandler.handle(nq);
+        String expected = "[CS170, CS61A, CS61B]";
+        assertThat(actual).isEqualTo(expected);
+    }
 }

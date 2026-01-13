@@ -237,15 +237,38 @@ public class GameOfLife {
         // The board is filled with Tileset.NOTHING
         fillWithNothing(nextGen);
 
-        // TODO: Implement this method so that the described transitions occur.
-        // TODO: The current state is represented by TETiles[][] tiles and the next
-        // TODO: state/evolution should be returned in TETile[][] nextGen.
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int aliveNeighbors = aliveNeighbor(tiles, i, j);
+                if (tiles[i][j].equals(Tileset.CELL)) {
+                    if (aliveNeighbors < 2 || aliveNeighbors > 3) {
+                        nextGen[i][j] = Tileset.NOTHING;
+                    } else {
+                        nextGen[i][j] = Tileset.CELL;
+                    }
+                } else if (aliveNeighbors == 3){
+                    nextGen[i][j] = Tileset.CELL;
+                }
+            }
+        }
 
+        return nextGen;
+    }
+    private int aliveNeighbor(TETile[][] tiles, int x, int y) {
+        int aliveNeighbors = 0;
+        for (int i = x - 1; i <= x + 1; i++) {
+            if (i < 0 || i >= width) {
+                continue;
+            }
+            for (int j = y - 1; j <= y + 1; j++) {
+                if (j < 0 || j >= height || (i == x && j == y)) {
+                    continue;
+                }
+                aliveNeighbors += (tiles[i][j].equals(Tileset.CELL)) ? 1 : 0;
 
-
-
-        // TODO: Returns the next evolution in TETile[][] nextGen.
-        return null;
+            }
+        }
+        return aliveNeighbors;
     }
 
     /**
@@ -266,16 +289,17 @@ public class GameOfLife {
      * 0 represents NOTHING, 1 represents a CELL.
      */
     public void saveBoard() {
-        // TODO: Save the dimensions of the board into the first line of the file.
-        // TODO: The width and height should be separated by a space, and end with "\n".
 
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(width).append(" ").append(height).append("\n");
+        for (int i = height - 1; i >= 0; i--) {
+            for (int j = 0; j < width; j++) {
+                stringBuilder.append(currentState[j][i].equals(Tileset.CELL) ? "1" : "0");
+            }
+            stringBuilder.append("\n");
+        }
 
-
-        // TODO: Save the current state of the board into save.txt. You should
-        // TODO: use the provided FileUtils functions to help you. Make sure
-        // TODO: the orientation is correct! Each line in the board should
-        // TODO: end with a new line character.
-
+        FileUtils.writeFile(SAVE_FILE, stringBuilder.toString());
 
 
 
@@ -287,25 +311,24 @@ public class GameOfLife {
      * 0 represents NOTHING, 1 represents a CELL.
      */
     public TETile[][] loadBoard(String filename) {
-        // TODO: Read in the file.
 
-        // TODO: Split the file based on the new line character.
+        String readFile = FileUtils.readFile(filename);
+        String[] lines = readFile.split("\n");
 
-        // TODO: Grab and set the dimensions from the first line.
+        String[] numbers = lines[0].split(" ");
+        width = Integer.parseInt(numbers[0]);
+        height = Integer.parseInt(numbers[1]);
 
-        // TODO: Create a TETile[][] to load the board from the file into
-        // TODO: and any additional variables that you think might help.
-
-
-        // TODO: Load the state of the board from the given filename. You can
-        // TODO: use the provided builder variable to help you and FileUtils
-        // TODO: functions. Make sure the orientation is correct!
+        TETile[][] returnBoard = new TETile[width][height];
 
 
+        for (int i = 1; i <= width; i++) {
+            for (int j = 0; j < height; j++) {
+                returnBoard[i - 1][j] = (lines[i].charAt(j) == '1') ? Tileset.CELL : Tileset.NOTHING;
+            }
+        }
 
-
-        // TODO: Return the board you loaded. Replace/delete this line.
-        return null;
+        return returnBoard;
     }
 
     /**

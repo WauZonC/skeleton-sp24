@@ -1,10 +1,18 @@
 package core;
 
+import tileengine.TERenderer;
+
 public class Main {
-    public static void main(String[] args) {
+    static void main(String[] args) {
+        long SEED = 99;
+        int width = 80;
+        int height = 30;
+        World world = new World(SEED, width, height);
+        TERenderer ter = new TERenderer();
 
-        // build your own world!
+        ter.initialize(width, height);
 
+        ter.renderFrame(world.getMap());
 
     }
 }

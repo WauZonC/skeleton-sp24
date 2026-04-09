@@ -19,7 +19,7 @@ public class AutograderBuddy {
      */
     public static TETile[][] getWorldFromInput(String input) {
 
-        throw new RuntimeException("Please fill out AutograderBuddy!");
+        return (new World(input, 80, 30)).getMap();
 
     }
 

@@ -38,6 +38,14 @@ public class FileUtils {
         }
     }
 
+    public static void delFile(String filename) {
+        try {
+            Files.delete(new File(filename).toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Checks if a file with the given filename exists.
      *
@@ -46,5 +54,27 @@ public class FileUtils {
      */
     public static boolean fileExists(String filename) {
         return new File(filename).exists();
+    }
+
+
+    public static boolean archiveExist(int index) {
+        return fileExists(archive(index));
+    }
+
+    public static String readArchive(int index) {
+        return readFile(archive(index));
+    }
+
+    public static void delArchive(int index) {
+        if (archiveExist(index)) {
+            delFile(archive(index));
+        }
+    }
+
+    public static String archive(int index) {
+        if (index <= 0 || index > 3) {
+            throw new IllegalArgumentException("Illegal archive index");
+        }
+        return "archive" + index + ".txt";
     }
 }

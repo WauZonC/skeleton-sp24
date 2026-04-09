@@ -30,7 +30,7 @@ public class World {
     }
 
     public World(long seed) {
-        this(seed, 800, 300);
+        this(seed, 80, 30);
     }
 
     public World(long seed, int width, int height) {
@@ -177,4 +177,11 @@ public class World {
         return map;
     }
 
+    public Random getRandom() {
+        return random;
+    }
+
+    public long getSeed() {
+        return SEED;
+    }
 }

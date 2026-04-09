@@ -75,6 +75,20 @@ FileUtils.java
 - The width and height of rooms should be random.
 - Hallways should have a width of 1 tile and a random length.
 - The world should be substantially different each time, i.e. you should NOT have the same basic layout with easily predictable features.
+## 1.4 proj 3b criteria
+### 1.4.1 interactivity
+- The user must be able to control some sort of “avatar” that can moved around using the W, A, S, and D keys.
+By “avatar”, we just mean some sort of on-screen representation controlled by the user(for example, “@”)
+- The avatar must be able to interact with the world in some way.
+- Your system must be deterministic in that the same sequence of key-presses from the same seed must result in exactly the same behavior every time.
+- In order to support saving and loading, your program will need to create some files in your proj3 directory (more details later in the spec and in the skeleton code). The only files you may create must have the suffix “.txt” (for example “save-file.txt”).
+- Optionally, you may also include game mechanics that allow the user to win or lose. Aside from these feature requirements, there will be a few technical requirements for your system, described in more detail below.
+### 1.4.2 UI(User Interface) Appearance
+- After the user has entered a seed and pressed S, the world should be displayed with a user interface. The user interface of your project must include:
+1. A 2D grid of tiles showing the current state of the world.
+2. A “Heads Up Display” (HUD) that provides additional information that maybe useful to the user. At the bare minimum, this should include Text that describes the tile currently under the mouse pointer. This should not be flickering, if it flickers you won’t be able to receive credit.
+### 1.4.3 Saving and Loading
+- When the user restarts `core.Main` and presses `L`, the world should be in exactly the same state as it was before the project was terminated. This state includes the state of the random number generator! More on this in the next section. In the case that a user attempts to load but there is no previous save, your system should simply quit and the UI interface should close with no errors produced.
 # 2. Design overall
 ## 2.a Version A -- room generator
 ### 2.a.1 key idea
@@ -91,6 +105,13 @@ FileUtils.java
 | 4     | world      | TETile[][]           | generate hallway      |
 | 5     | frame      | ???                  | ???                   |
 ### 2.a.3 class design
+```mermaid
+graph BT
+    tile --> Chunk --> World
+    tile --> World
+    Orientation -- Door --- Chunk
+    Orientation -- Hallway --- World
+```
 #### 2.a.3.1 (enum) Orientation
 ```
 the orientation of the door, (up down left right null)
@@ -131,4 +152,65 @@ the orientation of the door, (up down left right null)
 - * `private int[] relativeToAbsolute(int[] relative, int[] chunkCo)`
 - * `private void initializeTiles(TETile[][] tiles)`
 - * `public TETile[][] getMap()`
+## 2.b Version Upgrade B
+### 2.b.1 key idea
+- frame is the actual place where interactive happens
+### 2.b.2 layer of abstraction
+| level | name       | attribute            | method                |
+|-------|------------|----------------------|-----------------------|
+| 5     | frame      | ???                  | ???                   |
+### 2.b.3 class design
+```mermaid
+---
+title: the structure of Frame instances
+---
+graph LR
+    MainMenu -- input L --> LoadPage
+    MainMenu -- Input Seed --> GameWorld
+    LoadPage -- select archive --> GameWorld
+    MainMenu -. Input q/Q .-> optional
+    GameWorld --> Ending -.- Wining & Losing
+    GameWorld -. Input :q .-> optional[save/quit</br><i>not a instance]
+```
+#### 2.b.3.1 (Interface) Frame
+* interface method:
+- `void render()`: use StdDraw to render the frame
+- `void play()`: as a pseudo main function for the frame
+- `Frame nextPage(String name)`: change to the next page(arrange as a linked list)(experimental)
+#### 2.b.3.2 MainMenu
+* class method:
+- `void render()`
+- `void play()`
+- `Frame nextPage(String name)`
+#### 2.b.3.3 LoadPage
+* class method:
+- `void render()`
+- `void play()`
+- `Frame nextPage(String name)`
+#### 2.b.3.4 GameWorld
+* class method:
+- `void render()`
+- `void play()`
+- `Frame nextPage(String name)`
+#### 2.b.3.5 Winning/Lose
+* class method:
+- `void render()`
+- `void play()`
+- `Frame nextPage(String name)`
+#### 2.b.3.6 (record) ArchiveToken
+* record attribute:
+- `ArchiveToken(long SEED, int[] AvatarCo)`
+* record method:
+- `(Override) String toString()`
+- `static ArchiveToken loadArchive(int index)`
+- `static void saveArchive(ArchiveToken token)`
+- `static ArchiveToken toToken(GameWorld gameWorld)`
+#### 2.b.4 file format
+```
+[(long)SEED] [(int)AvatarX] [(int)AvatarY]
+[(int)flowerNumber]
+[(int)flower[0]X] [(int)flower[0]Y]
+[(int)flower[1]X] [(int)flower[1]Y]
+...
+```
 # 3. Detailed implementations
